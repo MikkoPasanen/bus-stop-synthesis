@@ -6,14 +6,27 @@ function App() {
 
     const fetchMP3 = async () => {
         try {
-            console.log("Fetching MP3 from fontend")
-            const response = await axios.get(
+            const response1 = await axios.get(
                 `http://localhost:8080/api/mp3/${id}`
             );
-            const audioElement = new Audio(
-                `data:audio/mpeg;base64,${response.data.mp3}`
+
+            const response2 = await axios.get(
+                `http://localhost:8080/api/prefix`
             );
-            audioElement.play();
+
+            const prefix = new Audio(
+                `data:audio/mpeg;base64,${response2.data.prefix}`
+            );
+
+            const announcement = new Audio(
+                `data:audio/mpeg;base64,${response1.data.mp3}`
+            );
+
+            prefix.play();
+            prefix.onended = () => {
+                announcement.play();
+            };
+
         } catch (error) {
             console.error(error);
         }
