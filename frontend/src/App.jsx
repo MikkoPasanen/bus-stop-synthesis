@@ -33,12 +33,19 @@ function App() {
     };
 
     return (
-        <div>
+        <div style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flexDirection: 'column',
+                  marginTop: '10rem'
+                  }}>
             <input
                 type="text"
                 value={id}
                 onChange={(e) => setId(e.target.value)}
-                placeholder="Enter MP3 ID"
+                placeholder="Enter bus stop ID"
+                style={{marginBottom: '1rem'}}
             />
             <button onClick={fetchMP3}>Fetch and Play</button>
         </div>
