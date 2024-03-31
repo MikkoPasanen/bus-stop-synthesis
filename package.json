@@ -1,0 +1,23 @@
+{
+    "name": "bus-stop-synthesis",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "install-all": "npm install",
+        "start-front": "npm run dev --workspace=frontend",
+        "start-back": "npm run start-dev --workspace=backend",
+        "start": "concurrently \"npm run start-front\" \"npm run start-back\"",
+        "docs": "jsdoc -c jsdoc.json"
+    },
+    "keywords": [],
+    "workspaces": [
+        "frontend",
+        "backend"
+    ],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "concurrently": "^8.2.2"
+    }
+}
