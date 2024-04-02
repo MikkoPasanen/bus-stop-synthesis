@@ -4,33 +4,36 @@ import axios from "axios";
 function App() {
     const [id, setId] = useState("");
 
-    const fetchMP3 = async () => {
-        try {
-            const response1 = await axios.get(
-                `http://localhost:8080/api/mp3/${id}`
-            );
+    const fetchAndPlayMP3 = async () => {
+    try {
+        let prefixData = localStorage.getItem("prefix");
+        let announcementData = localStorage.getItem(id);
 
-            const response2 = await axios.get(
-                `http://localhost:8080/api/prefix`
-            );
-
-            const prefix = new Audio(
-                `data:audio/mpeg;base64,${response2.data.prefix}`
-            );
-
-            const announcement = new Audio(
-                `data:audio/mpeg;base64,${response1.data.mp3}`
-            );
-
-            prefix.play();
-            prefix.onended = () => {
-                announcement.play();
-            };
-
-        } catch (error) {
-            console.error(error);
+        if (!prefixData) {
+            const prefixResponse = await axios.get(`${import.meta.env.VITE_API_URL}/api/prefix`);
+            prefixData = prefixResponse.data.prefix;
+            localStorage.setItem("prefix", prefixData);
         }
-    };
+
+        if (!announcementData) {
+            const announcementResponse = await axios.get(`${import.meta.env.VITE_API_URL}/api/mp3/${id}`);
+            announcementData = announcementResponse.data.mp3;
+            localStorage.setItem(id, announcementData);
+        }
+
+        const prefixAudio = new Audio(`data:audio/mpeg;base64,${prefixData}`);
+        const announcementAudio = new Audio(`data:audio/mpeg;base64,${announcementData}`);
+
+        prefixAudio.play();
+        prefixAudio.onended = () => {
+            announcementAudio.play();
+        };
+
+    } catch (err) {
+        console.error(err);
+    }
+};
+
 
     return (
         <div style={{
@@ -47,7 +50,7 @@ function App() {
                 placeholder="Enter bus stop ID"
                 style={{marginBottom: '1rem'}}
             />
-            <button onClick={fetchMP3}>Fetch and Play</button>
+            <button onClick={() => fetchAndPlayMP3()}>Fetch and Play</button>
         </div>
     );
 }
