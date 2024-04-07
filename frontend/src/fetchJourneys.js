@@ -37,7 +37,7 @@ const fetchJourneys = {
                 });
         } catch (err) {
             console.log(err);
-            return undefined;
+            return "could not be found";
         }
     },
 };
