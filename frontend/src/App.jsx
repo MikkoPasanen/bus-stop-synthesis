@@ -2,7 +2,7 @@ import { useState } from "react";
 import fetchJourneys from "./fetchJourneys";
 import validBusLines from "./validBusLines";
 import axios from "axios";
-import DisplayLocation from "./DisplayLocation";
+import DisplayLocation from "./DisplayLocation.jsx";
 
 function App() {
   // Bus stop announcement ID, testing purposes for now
@@ -142,6 +142,9 @@ function App() {
       {!validBusInput && (
         <div style={{ color: "red" }}>The bus line number is not valid!</div>
       )}
+      <div>
+        <DisplayLocation />
+      </div>
     </div>
   );
 }
