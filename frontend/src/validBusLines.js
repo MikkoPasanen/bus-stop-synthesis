@@ -1,4 +1,4 @@
-const validBusStops = [
+const validBusLines = [
     "VR",
     "1",
     "2",
@@ -122,4 +122,4 @@ const validBusStops = [
     "104"
 ];
 
-export default validBusStops;
+export default validBusLines;

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import fetchJourneys from "./fetchJourneys";
-import validBusStops from "./validBusStops";
+import validBusLines from "./validBusLines";
 import axios from "axios";
 import DisplayLocation from "./DisplayLocation";
 
@@ -18,20 +18,20 @@ function App() {
   // Bus tracking
   const [tracking, setTracking] = useState("not tracking");
 
-  // Valid bus input
+  // Valid bus line input
   const [validBusInput, setValidBusInput] = useState(true);
 
   /**
-   * Fetches the prefix and the announcement mp3 files from the backend
+   * Fetches the prefix and the bus stop announcement mp3 files
    * and plays them in sequence
    */
   const fetchAndPlayMP3 = async () => {
     try {
-      // Get the mp3 files from browsers localstorage
+      // Get the mp3 data from the localstorage
       let prefixData = localStorage.getItem("prefix");
       let announcementData = localStorage.getItem(id);
 
-      // If the mp3 files are not in the localstorage, fetch them from the backend
+      // If the mp3 datas are not in the localstorage, fetch them from the backend
       // and save them to the localstorage
 
       if (!prefixData) {
@@ -74,8 +74,8 @@ function App() {
    * @param {*} linenro
    * @returns true if the bus line number is valid, false otherwise
    */
-  const checkValidBusStop = (linenro) => {
-    const validBusLine = validBusStops.includes(linenro);
+  const checkValidBusLine = (linenro) => {
+    const validBusLine = validBusLines.includes(linenro);
     setValidBusInput(validBusLine);
     return validBusLine;
   };
@@ -125,7 +125,7 @@ function App() {
         />
         <button
           onClick={() => {
-            if (checkValidBusStop(linenro)) {
+            if (checkValidBusLine(linenro)) {
               if (tracking == "not tracking") {
                 fetchJourneys
                   .fetchBus(linenro, latitude, longitude)
@@ -138,10 +138,6 @@ function App() {
         >
           Connect to bus
         </button>
-        <div>
-          <h1>User's Location</h1>
-          <DisplayLocation />
-        </div>
       </div>
       {!validBusInput && (
         <div style={{ color: "red" }}>The bus line number is not valid!</div>
