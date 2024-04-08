@@ -1,8 +1,9 @@
+/* eslint-disable react/prop-types */
 import React, { useState, useEffect } from "react";
 import haversine from "haversine-distance";
 import axios from "axios";
 
-const DisplayLocation = () => {
+const DisplayLocation = ({fetchAndPlayMP3}) => {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [error, setError] = useState(null);
@@ -56,7 +57,7 @@ const DisplayLocation = () => {
 
       // If user is within a specific distance, call fetchAndPlayMP3()
       if (distance <= 160000) {
-        fetchAndPlayMP3();
+        fetchAndPlayMP3(stopId);
       }
     }
   };
@@ -65,47 +66,6 @@ const DisplayLocation = () => {
   useEffect(() => {
     CheckDistance();
   }, [latitude, longitude, stopLocationData]);
-
-  const fetchAndPlayMP3 = async () => {
-    try {
-      // Get the mp3 files from browsers localstorage
-      let prefixData = localStorage.getItem("prefix");
-      let announcementData = localStorage.getItem(stopId);
-
-      // If the mp3 files are not in the localstorage, fetch them from the backend
-      // and save them to the localstorage
-      if (!prefixData) {
-        const prefixResponse = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/prefix`
-        );
-        prefixData = prefixResponse.data.prefix;
-        localStorage.setItem("prefix", prefixData);
-      }
-
-      if (!announcementData) {
-        const announcementResponse = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/mp3/${stopId}`
-        );
-        announcementData = announcementResponse.data.mp3;
-        localStorage.setItem(stopId, announcementData);
-      }
-
-      // Make the audio files from the base64 strings
-      const prefixAudio = new Audio(`data:audio/mpeg;base64,${prefixData}`);
-      const announcementAudio = new Audio(
-        `data:audio/mpeg;base64,${announcementData}`
-      );
-
-      // First play the prefix audio and then the announcement audio
-      // after the prefix audio has ended
-      prefixAudio.play();
-      prefixAudio.onended = () => {
-        announcementAudio.play();
-      };
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   return (
     <div>

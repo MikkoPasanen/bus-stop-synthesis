@@ -25,7 +25,7 @@ function App() {
    * Fetches the prefix and the bus stop announcement mp3 files
    * and plays them in sequence
    */
-  const fetchAndPlayMP3 = async () => {
+  const fetchAndPlayMP3 = async (id) => {
     try {
       // Get the mp3 data from the localstorage
       let prefixData = localStorage.getItem("prefix");
@@ -98,7 +98,7 @@ function App() {
           placeholder="Enter bus stop ID"
           style={{ marginBottom: "1rem" }}
         />
-        <button onClick={() => fetchAndPlayMP3()}>Fetch and Play</button>
+        <button onClick={() => fetchAndPlayMP3(id)}>Fetch and Play</button>
       </div>
       <div>Currently tracked bus: {tracking}</div>
       <div>
@@ -143,7 +143,7 @@ function App() {
         <div style={{ color: "red" }}>The bus line number is not valid!</div>
       )}
       <div>
-        <DisplayLocation />
+        <DisplayLocation fetchAndPlayMP3={fetchAndPlayMP3}/>
       </div>
     </div>
   );
