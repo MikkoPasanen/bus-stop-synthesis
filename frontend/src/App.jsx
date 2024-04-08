@@ -1,19 +1,39 @@
 import { useState } from "react";
 import fetchJourneys from "./fetchJourneys";
+import validBusStops from "./validBusStops";
 import axios from "axios";
 
 function App() {
+    // Bus stop announcement ID, testing purposes for now
     const [id, setId] = useState("");
+
     // Default: Line 6, TAMK bus stop
     const [linenro, setLinenro] = useState(6);
+
+    // Users location
     const [latitude, setLatitude] = useState(61.503178);
     const [longitude, setLongitude] = useState(23.812778);
+
+    // Bus tracking
     const [tracking, setTracking] = useState("not tracking");
 
+    // Valid bus input
+    const [validBusInput, setValidBusInput] = useState(true);
+
+
+    /**
+     * Fetches the prefix and the announcement mp3 files from the backend
+     * and plays them in sequence
+     */
     const fetchAndPlayMP3 = async () => {
         try {
+
+            // Get the mp3 files from browsers localstorage
             let prefixData = localStorage.getItem("prefix");
             let announcementData = localStorage.getItem(id);
+
+            // If the mp3 files are not in the localstorage, fetch them from the backend
+            // and save them to the localstorage
 
             if (!prefixData) {
                 const prefixResponse = await axios.get(
@@ -31,6 +51,8 @@ function App() {
                 localStorage.setItem(id, announcementData);
             }
 
+
+            // Make the audio files from the base64 strings
             const prefixAudio = new Audio(
                 `data:audio/mpeg;base64,${prefixData}`
             );
@@ -38,6 +60,8 @@ function App() {
                 `data:audio/mpeg;base64,${announcementData}`
             );
 
+            // First play the prefix audio and then the announcement audio
+            // after the prefix audio has ended
             prefixAudio.play();
             prefixAudio.onended = () => {
                 announcementAudio.play();
@@ -46,6 +70,19 @@ function App() {
             console.error(err);
         }
     };
+
+    /**
+     * Checks if the bus line number is valid by
+     * comparing it to the valid bus lines array
+     *
+     * @param {*} linenro
+     * @returns true if the bus line number is valid, false otherwise
+     */
+    const checkValidBusStop = (linenro) => {
+        const validBusLine = validBusStops.includes(linenro);
+        setValidBusInput(validBusLine);
+        return validBusLine;
+    }
 
     return (
         <div
@@ -94,18 +131,26 @@ function App() {
                 />
                 <button
                     onClick={() => {
-                        if (tracking == "not tracking") {
-                            fetchJourneys
-                                .fetchBus(linenro, latitude, longitude)
-                                .then((data) => setTracking(data));
-                        } else {
-                            setTracking("not tracking");
+                        if (checkValidBusStop(linenro)) {
+                            if (tracking == "not tracking") {
+                                fetchJourneys
+                                    .fetchBus(linenro, latitude, longitude)
+                                    .then((data) => setTracking(data));
+                            } else {
+                                setTracking("not tracking");
+                            }
                         }
                     }}
                 >
                     Connect to bus
                 </button>
             </div>
+            {!validBusInput && (
+                <div style={{ color: "red" }}>
+                    The bus line number is not valid!
+                </div>
+
+            )}
         </div>
     );
 }
