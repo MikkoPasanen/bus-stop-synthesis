@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import haversine from "haversine-distance";
 import axios from "axios";
 
