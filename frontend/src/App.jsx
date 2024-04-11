@@ -53,10 +53,9 @@ function App() {
   const fetchBusInfo = (vehicleId) => {
 
     // Fetch the bus info from the given vehicleId
-    fetch(`http://data.itsfactory.fi/journeys/api/1/vehicle-activity?vehicleRef=${vehicleId}`)
+    fetch(`https://data.itsfactory.fi/journeys/api/1/vehicle-activity?vehicleRef=${vehicleId}`)
       .then((res) => res.json())
       .then((data) => {
-
         // Get the next arrival time and the stop ID
         let nextArrivalTime = data.body[0].monitoredVehicleJourney.onwardCalls[0].expectedArrivalTime;
         let stopId = data.body[0].monitoredVehicleJourney.onwardCalls[0].stopPointRef;
