@@ -64,7 +64,7 @@ function App() {
   const fetchBusInfo = (vehicleId) => {
     // Fetch the bus info from the given vehicleId
     fetch(
-      `http://data.itsfactory.fi/journeys/api/1/vehicle-activity?vehicleRef=${vehicleId}`
+      `https://data.itsfactory.fi/journeys/api/1/vehicle-activity?vehicleRef=${vehicleId}`
     )
       .then((res) => res.json())
       .then((data) => {
@@ -158,13 +158,20 @@ function App() {
         <button
           onClick={() => {
             if (checkValidBusLine(linenro)) {
-              if (tracking == "not tracking") {
-                fetchJourneys
-                  .fetchBus(linenro, latitude, longitude)
-                  .then((data) => setTracking(data));
-              } else {
-                setTracking("not tracking");
-              }
+              getUserPosition(setLatitude, setLongitude, setError)
+                .then(() => {
+                  if (tracking === "not tracking") {
+                    fetchJourneys
+                      .fetchBus(linenro, latitude, longitude)
+                      .then((data) => setTracking(data));
+                  } else {
+                    setTracking("not tracking");
+                  }
+                })
+                .catch((error) => {
+                  // Handle error if getUserPosition fails
+                  console.error("Error getting user position:", error);
+                });
             }
           }}
         >
