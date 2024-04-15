@@ -3,6 +3,7 @@ import fetchJourneys from "./util/fetchJourneys.js";
 import validBusLines from "./util/validBusLines.js";
 import DisplayLocation from "./components/DisplayLocation.jsx";
 import fetchAndPlayMP3 from "./util/fetchAndPlayMP3.js";
+import callNextStop from "./util/callNextStop.js";
 
 function App() {
     // Bus stop announcement ID, testing purposes for now
@@ -20,12 +21,6 @@ function App() {
 
     // Valid bus line input
     const [validBusInput, setValidBusInput] = useState(true);
-
-    // The next stop
-    const [nextStop, setNextStop] = useState("hello");
-
-    // Has the next stop been called?
-    const [hasBeenCalled, setHasBeenCalled] = useState(false);
 
     // Everytime the tracking state changes, fetch the bus info
     useEffect(() => {
@@ -45,6 +40,8 @@ function App() {
         return () => {
             if (timeoutId) {
                 clearTimeout(timeoutId);
+                // Reset function's memory
+                callNextStop(undefined);
             }
         };
     }, [tracking]);
@@ -90,16 +87,8 @@ function App() {
                 console.log(timeDifferenceInMinutes);
                 console.log(parsedStopId);
 
-                // If the next stop is different from the fetched stop, update the information
-                if (nextStop != parsedStopId) {
-                    console.log(`Passed pysäkki: ${nextStop}`);
-                    setNextStop(parsedStopId);
-                    setHasBeenCalled(false);
-                }
-
-                if (timeDifferenceInMinutes <= 1 && !hasBeenCalled) {
-                    console.log(`Calling: ${nextStop}`);
-                    setHasBeenCalled(true);
+                // Check if the stop name should be called
+                if (callNextStop(parsedStopId, timeDifferenceInMinutes)) {
                     fetchAndPlayMP3(parsedStopId);
                 }
             });
