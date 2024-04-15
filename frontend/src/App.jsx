@@ -89,7 +89,7 @@ function App() {
 
                 // Check if the stop name should be called
                 if (callNextStop(parsedStopId, timeDifferenceInMinutes)) {
-                    fetchAndPlayMP3(parsedStopId);
+                    fetchAndPlayMP3(parseInt(parsedStopId));
                 }
             });
     };
