@@ -15,7 +15,7 @@ const fetchJourneys = {
             let trackingBus;
             let shortestDistance = 1500; // Will be overridden with any actual distance on Earth
             return await fetch(
-                `http://data.itsfactory.fi/journeys/api/1/vehicle-activity?lineRef=${line}`
+                `https://data.itsfactory.fi/journeys/api/1/vehicle-activity?lineRef=${line}`
             )
                 .then((res) => res.json())
                 .then((data) => {
