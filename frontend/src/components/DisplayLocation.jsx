@@ -2,8 +2,9 @@
 import { useState, useEffect } from "react";
 import haversine from "haversine-distance";
 import axios from "axios";
+import getUserPosition from "../util/getPosition";
 
-const DisplayLocation = ({fetchAndPlayMP3}) => {
+const DisplayLocation = ({ fetchAndPlayMP3 }) => {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [error, setError] = useState(null);
@@ -12,22 +13,7 @@ const DisplayLocation = ({fetchAndPlayMP3}) => {
   const [stopLocationData, setStopLocationData] = useState("");
 
   useEffect(() => {
-    // On Success save the user's position
-    const successHandler = (position) => {
-      setLatitude(position.coords.latitude);
-      setLongitude(position.coords.longitude);
-    };
-
-    const errorHandler = (err) => {
-      setError(err.message);
-    };
-
-    // Attempt to get user's position
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(successHandler, errorHandler);
-    } else {
-      setError("Geolocation is not supported by this browser.");
-    }
+    getUserPosition(setLatitude, setLongitude, setError);
   }, []);
 
   const fetchStopInfo = async () => {
