@@ -4,58 +4,57 @@ import validBusLines from "./util/validBusLines.js";
 import DisplayLocation from "./components/DisplayLocation.jsx";
 import fetchAndPlayMP3 from "./util/fetchAndPlayMP3.js";
 import callNextStop from "./util/callNextStop.js";
-<<<<<<< HEAD
-import { CssBaseline } from "@mui/material";
-
-import TopAppBar from "./components/TopAppBar.jsx";
-=======
 import getUserPosition from "./util/getPosition.js";
->>>>>>> 467ce1a71cb2e3422b1bf8ec61bf0214ac85f062
+
+// Material UI
+import { CssBaseline } from '@mui/material';
+
+// Components
+import TopAppBar from "./components/TopAppBar.jsx";
+import MainPage from "./components/MainPage.jsx";
+import TrackingPage from "./components/TrackingPage.jsx";
 
 function App() {
-  // Bus stop announcement ID, testing purposes for now
-  const [id, setId] = useState("");
+    // Bus line number
+    const [id, setId] = useState("");
 
-  // Default: Line 6, TAMK, Teiskontie bus stop
-  const [linenro, setLinenro] = useState(6);
+    // Bus tracking
+    const [tracking, setTracking] = useState("not tracking");
 
-  // Users location
-  const [latitude, setLatitude] = useState(61.503178);
-  const [longitude, setLongitude] = useState(23.812778);
+    // Users location
+    const [latitude, setLatitude] = useState(61.503178);
+    const [longitude, setLongitude] = useState(23.812778);
 
-  const [error, setError] = useState(null);
+    const [error, setError] = useState(null);
 
-  // Get user position
-  useEffect(() => {
-    getUserPosition(setLatitude, setLongitude, setError);
-  }, []);
+    // Get user position
+    useEffect(() => {
+        getUserPosition(setLatitude, setLongitude, setError);
+    }, []);
 
-  // Bus tracking
-  const [tracking, setTracking] = useState("not tracking");
-
-  // Valid bus line input
-  const [validBusInput, setValidBusInput] = useState(true);
-
-  // Everytime the tracking state changes, fetch the bus info
-  useEffect(() => {
-    let timeoutId;
-
-    // Fetch bus info every 5 seconds recursively
-    const fetchAndSchedule = async () => {
-      if (tracking !== "not tracking") {
-        await fetchBusInfo(tracking);
-        timeoutId = setTimeout(fetchAndSchedule, 5000);
-      }
-    };
-
-    fetchAndSchedule();
 
     return (
-        <>
-            <CssBaseline />
-            <TopAppBar></TopAppBar>
-        </>
-    );
+      <>
+        <CssBaseline />
+        <TopAppBar />
+        {tracking === "not tracking" ? (
+          <MainPage
+            linenro={id}
+            setLinenro={setId}
+            setTracking={setTracking}
+            latitude={latitude}
+            longitude={longitude}
+            setLatitude={setLatitude}
+            setLongitude={setLongitude}
+            setError={setError}
+            tracking={tracking}
+          />
+        ) : (
+          <TrackingPage tracking={tracking} />
+        )
+        }
+      </>
+    )
 
     // return (
     //     <div
@@ -105,13 +104,27 @@ function App() {
     //             <button
     //                 onClick={() => {
     //                     if (checkValidBusLine(linenro)) {
-    //                         if (tracking == "not tracking") {
-    //                             fetchJourneys
-    //                                 .fetchBus(linenro, latitude, longitude)
-    //                                 .then((data) => setTracking(data));
-    //                         } else {
-    //                             setTracking("not tracking");
-    //                         }
+    //                         getUserPosition(setLatitude, setLongitude, setError)
+    //                             .then(() => {
+    //                                 if (tracking === "not tracking") {
+    //                                     fetchJourneys
+    //                                         .fetchBus(
+    //                                             linenro,
+    //                                             latitude,
+    //                                             longitude
+    //                                         )
+    //                                         .then((data) => setTracking(data));
+    //                                 } else {
+    //                                     setTracking("not tracking");
+    //                                 }
+    //                             })
+    //                             .catch((error) => {
+    //                                 // Handle error if getUserPosition fails
+    //                                 console.error(
+    //                                     "Error getting user position:",
+    //                                     error
+    //                                 );
+    //                             });
     //                     }
     //                 }}
     //             >

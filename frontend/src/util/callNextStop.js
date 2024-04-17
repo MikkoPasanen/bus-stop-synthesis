@@ -10,15 +10,14 @@ let hasBeenCalled = false;
  * @returns true if stop should be called, false if it shouldn't
  */
 const callNextStop = (stopID, timeDifferenceInMinutes) => {
-    console.log(stopID);
     // Update StopID and called status
     if (stopID != nextStopID) {
         nextStopID = stopID;
         hasBeenCalled = false;
     }
 
-    // Call if less than a minute left
-    if (timeDifferenceInMinutes <= 1 && !hasBeenCalled) {
+    // Call if less than 30 seconds away
+    if (timeDifferenceInMinutes < 1 && !hasBeenCalled) {
         hasBeenCalled = true;
         return true;
     }
