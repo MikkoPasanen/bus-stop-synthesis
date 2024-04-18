@@ -1,9 +1,13 @@
 /* eslint-disable react/prop-types */
-import { Box, TextField, Typography, Button, Snackbar, Alert } from "@mui/material";
 import { useState } from "react";
+
+// Util
 import validBusLines from "../util/validBusLines.js";
 import fetchJourneys from "../util/fetchJourneys.js";
 import getUserPosition from "../util/getPosition.js";
+
+// Material UI
+import { Box, TextField, Typography, Button, Snackbar, Alert, CircularProgress } from "@mui/material";
 
 export default function MainPage({
     linenro, setLinenro, setTracking, latitude, longitude,
@@ -12,6 +16,9 @@ export default function MainPage({
 
     // Errors
     const [linenroError, setLinenroError] = useState(false);
+
+    // Loading state
+    const [loading, setLoading] = useState(false);
 
     /**
      * Checks if the bus line number is valid by
@@ -39,12 +46,20 @@ export default function MainPage({
         setLinenroError(false);
     };
 
+    /**
+     * When called, change the tracking state to the given bus line number
+     * and start tracking the bus stops (TrackingPage.jsx)
+     *
+     * @param {*} linenro - The bus line number
+     */
     const trackStops = (linenro) => {
+        setLoading(true);
+
         if (!checkValidBusLine(linenro)) {
+            setLoading(false);
             return;
         }
 
-        setLinenroError(false);
         getUserPosition(setLatitude, setLongitude, setError)
             .then(() => {
                 if (tracking === "not tracking") {
@@ -91,14 +106,26 @@ export default function MainPage({
                 variant="contained"
                 sx={{ mt: "2rem", borderRadius: "40px", fontSize: "1.2rem" }}
                 value={linenro}
-                onChange={(e) => setLinenro(e.target.value)}
                 onClick={() => trackStops(linenro)}
             >
-                Seuraa
+                {loading ? (
+                    <>
+                        Haetaan linjoja...
+                        <CircularProgress
+                            size={20}
+                            sx={{ ml: 2 }}
+                            color="inherit"
+                        />
+                    </>
+                ) : (
+                    <>
+                        Seuraa linjaa
+                    </>
+                )}
             </Button>
             <Snackbar
                 open={linenroError}
-                autoHideDuration={6000}
+                autoHideDuration={5000}
                 onClose={handleClose}
                 anchorOrigin={{ vertical: "top", horizontal: "center" }}
             >
@@ -106,7 +133,7 @@ export default function MainPage({
                     severity="error"
                     onClose={handleClose}
                     variant="filled"
-                    sx={{ fontSize: "1.2rem", mt: "15%" }}
+                    sx={{ fontSize: "1.2rem", mt: "13%" }}
                 >
                     Linjan numero ei ole kelvollinen
                 </Alert>
