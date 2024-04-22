@@ -20,6 +20,7 @@ export default function MainPage({
     // Loading state
     const [loading, setLoading] = useState(false);
 
+
     /**
      * Checks if the bus line number is valid by
      * comparing it to the valid bus lines array

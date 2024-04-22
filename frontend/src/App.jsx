@@ -10,10 +10,13 @@ import { CssBaseline } from '@mui/material';
 import TopAppBar from "./components/TopAppBar.jsx";
 import MainPage from "./components/MainPage.jsx";
 import TrackingPage from "./components/TrackingPage.jsx";
+import InfoScreen from "./components/InfoScreen.jsx";
 
 function App() {
     // Bus line number
     const [id, setId] = useState("");
+
+    const [open, setOpen] = useState(false);
 
     // Bus tracking
     const [tracking, setTracking] = useState("not tracking");
@@ -32,7 +35,7 @@ function App() {
     return (
       <>
         <CssBaseline />
-        <TopAppBar />
+        <TopAppBar setOpen={setOpen}/>
         {tracking === "not tracking" ? (
           <MainPage
             linenro={id}
@@ -52,6 +55,7 @@ function App() {
           />
         )
         }
+        <InfoScreen open={open} setOpen={setOpen} />
       </>
     )
 }

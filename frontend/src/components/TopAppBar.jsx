@@ -1,8 +1,10 @@
+/* eslint-disable react/prop-types */
 import { AppBar, Toolbar, Typography, Box, IconButton } from "@mui/material";
 
 import HelpIcon from "@mui/icons-material/Help";
 
-export default function TopAppBar() {
+export default function TopAppBar({ setOpen }) {
+
     return (
         <AppBar position="static">
             <Toolbar>
@@ -22,6 +24,7 @@ export default function TopAppBar() {
                         edge="end"
                         color="inherit"
                         aria-label="help"
+                        onClick={() => setOpen(true)}
                     >
                         <HelpIcon sx={{ fontSize: "40px" }} />
                     </IconButton>
