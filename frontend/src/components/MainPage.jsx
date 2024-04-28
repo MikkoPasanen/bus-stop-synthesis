@@ -5,6 +5,7 @@ import { useState } from "react";
 import validBusLines from "../util/validBusLines.js";
 import fetchJourneys from "../util/fetchJourneys.js";
 import getUserPosition from "../util/getPosition.js";
+import busIcon from "../assets/bus-icon.png";
 
 // Material UI
 import { Box, TextField, Typography, Button, Snackbar, Alert, CircularProgress } from "@mui/material";
@@ -93,37 +94,97 @@ export default function MainPage({
                 flexDirection: "column",
             }}
         >
-            <Typography sx={{ pt: "5rem", pb: "1rem", fontSize: "1.2rem" }}>
-                Syötä haluamasi Nyssen linjan numero
-            </Typography>
-            <TextField
-                required
-                label="Linjan numero"
-                value={linenro}
-                onChange={(e) => setLinenro(e.target.value)}
-                error={linenroError}
+            <Box
+                sx={{
+                    position: "absolute",
+                    width: 450,
+                    height: 400,
+                    borderRadius: "50%",
+                    bgcolor: "#1d77e6",
+                    zIndex: -1,
+                    top: "10%",
+                }}
             />
-            <Button
-                variant="contained"
-                sx={{ mt: "2rem", borderRadius: "40px", fontSize: "1.2rem" }}
-                value={linenro}
-                onClick={() => trackStops(linenro)}
+
+            <Box
+                sx={{
+                    position: "relative",
+                    zIndex: 1,
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                }}
             >
-                {loading ? (
-                    <>
-                        Haetaan linjoja...
-                        <CircularProgress
-                            size={20}
-                            sx={{ ml: 2 }}
-                            color="inherit"
-                        />
-                    </>
-                ) : (
-                    <>
-                        Seuraa linjaa
-                    </>
-                )}
-            </Button>
+                <Typography
+                    sx={{
+                        pt: "5rem",
+                        pb: "1rem",
+                        fontSize: "1.5rem",
+                        textAlign: "center",
+                        color: "white",
+                        fontWeight: "bold",
+                    }}
+                >
+                    Syötä haluamasi Nyssen <br /> linjan numero
+                </Typography>
+                <TextField
+                    required
+                    label="Linjan numero"
+                    value={linenro}
+                    onChange={(e) => setLinenro(e.target.value)}
+                    error={linenroError}
+                    sx={{
+                        bgcolor: "white",
+                        borderRadius: "10px",
+                        border: "1px solid black",
+                    }}
+                />
+                <Button
+                    variant="contained"
+                    sx={{
+                        mt: "3rem",
+                        borderRadius: "40px",
+                        fontSize: "1.2rem",
+                        bgcolor: "white",
+                        border: "1px solid black",
+                        padding: "1.5rem",
+                        "&:active": {
+                            backgroundColor: "white",
+                        },
+                    }}
+                    value={linenro}
+                    onClick={() => trackStops(linenro)}
+                >
+                    {loading ? (
+                        <>
+                            <Typography
+                                sx={{ color: "black", fontWeight: "bold" }}
+                            >
+                                Haetaan linjoja...
+                            </Typography>
+                            <CircularProgress
+                                size={20}
+                                sx={{ ml: 2 }}
+                                color="secondary"
+                            />
+                        </>
+                    ) : (
+                        <Typography sx={{ color: "black", fontWeight: "bold" }}>
+                            Seuraa linjaa
+                        </Typography>
+                    )}
+                </Button>
+            </Box>
+
+            <img
+                src={busIcon}
+                alt="Bus icon"
+                width="300"
+                height="300"
+                style={{ position: "absolute", bottom: 0 }}
+            />
+
             <Snackbar
                 open={linenroError}
                 autoHideDuration={5000}

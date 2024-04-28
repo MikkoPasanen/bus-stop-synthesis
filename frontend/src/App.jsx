@@ -52,6 +52,7 @@ function App() {
           <TrackingPage
             tracking={tracking}
             setTracking={setTracking}
+            linenro={id}
           />
         )
         }

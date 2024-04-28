@@ -1,15 +1,18 @@
 /* eslint-disable react/prop-types */
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // Util
 import callNextStop from "../util/callNextStop.js";
 import fetchAndPlayMP3 from "../util/fetchAndPlayMP3.js";
 
+import axios from "axios";
+
 // Material UI
 import { Box, Typography, Button } from '@mui/material';
 
-export default function TrackingPage({ tracking, setTracking }) {
+export default function TrackingPage({ tracking, setTracking, linenro }) {
 
+    const [stopLocationName, setStopLocationName] = useState("");
 
     // Everytime the tracking state changes, fetch the bus info
     useEffect(() => {
@@ -66,11 +69,23 @@ export default function TrackingPage({ tracking, setTracking }) {
                     console.log(timeDifferenceInMinutes);
                     console.log(parsedStopId);
 
+                    fetchStopName(parsedStopId);
                     // Check if the stop name should be called
                     if (callNextStop(parsedStopId, timeDifferenceInMinutes)) {
                         fetchAndPlayMP3(parseInt(parsedStopId));
                     }
                 });
+        };
+
+        const fetchStopName = async (stopId) => {
+            try {
+                const response = await axios.get(
+                    `https://data.itsfactory.fi/journeys/api/1/stop-points/${stopId}`
+                );
+                setStopLocationName(response.data.body[0].name);
+            } catch (error) {
+                console.error(error);
+            }
         };
 
         fetchAndSchedule();
@@ -99,12 +114,72 @@ export default function TrackingPage({ tracking, setTracking }) {
                 flexDirection: "column",
             }}
         >
-            <Typography variant="h5" sx={{ fontWeight: "bold", mt: "7rem" }}>
-                Tracking: {tracking}
+            <Typography
+                variant="h5"
+                sx={{
+                    fontWeight: "bold",
+                    mt: "1.5rem",
+                    textAlign: "center",
+                }}
+            >
+                Seurataan linjaa numero:
             </Typography>
+            <Typography
+                variant="h5"
+                sx={{
+                    fontWeight: "bold",
+                    textAlign: "center",
+                    fontSize: "3rem",
+                }}
+            >
+                {linenro}
+            </Typography>
+
+            <Box
+                sx={{
+                    position: "absolute",
+                    width: 450,
+                    height: 400,
+                    borderRadius: "50%",
+                    bgcolor: "#1d77e6",
+                    zIndex: -1,
+                    top: "22%",
+                }}
+            />
+
+            <Typography
+                sx={{
+                    mt: "4.5rem",
+                    fontSize: "1.5rem",
+                    color: "white",
+                    fontWeight: "bold",
+                }}
+            >
+                Seuraava pysäkki:
+            </Typography>
+
+            <Typography
+                sx={{
+                    mt: "5rem",
+                    fontSize: "2.5rem",
+                    color: "white",
+                    fontWeight: "bold",
+                }}
+            >
+                {stopLocationName}
+            </Typography>
+
             <Button
                 variant="contained"
-                sx={{ mt: "2rem", borderRadius: "40px", fontSize: "1.2rem" }}
+                sx={{
+                    mt: "2rem",
+                    borderRadius: "40px",
+                    fontSize: "1.5rem",
+                    fontWeight: "bold",
+                    position: "absolute",
+                    bottom: "15%",
+                    padding: "1.5rem",
+                }}
                 onClick={() => stopTracking()}
             >
                 Lopeta seuranta

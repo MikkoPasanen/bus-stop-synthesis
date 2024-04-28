@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/prop-types */
 import { Dialog, DialogTitle, Typography, DialogContent, DialogActions, Button } from "@mui/material";
 
@@ -12,13 +13,17 @@ export default function InfoScreen({ open, setOpen }) {
             >
                 <DialogTitle
                     sx={{ textAlign: "center" }}
-                >Info</DialogTitle>
+                >INFO
+                </DialogTitle>
                 <DialogContent>
-                    <Typography>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    </Typography>
-                    <Typography>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    <Typography sx={{textAlign: "center"}}>
+                        Syötä sen Nyssen bussin linjanumero tekstikenttään, jonka kyydissä olet ja paina "Seuraa linjaa" -nappia.
+                        <br />
+                        <br />
+                        Näytämme ja kuulumme sinulle, kun bussi on saapumassa seuraavalle pysäkille.
+                        <br />
+                        <br />
+                        Voit lopettaa seurannan painamalla "Lopeta seuranta" -nappia.
                     </Typography>
                 </DialogContent>
                 <DialogActions>
