@@ -103,6 +103,7 @@ export default function MainPage({
                         .fetchBus(linenro, latitude, longitude)
                         .then((data) => {
                             setBusData(data);
+                            console.log(`data length: ${data.length}`);
                             if (data.length > 1) {
                                 return new Promise((resolve, reject) => {
                                     fetchJourneys
@@ -153,7 +154,8 @@ export default function MainPage({
                                         });
                                 });
                             } else {
-                                return [data[0].id]; // Return a single tracking ID
+                                // Set user selection to the first index
+                                return [{ id: data[0].id }];
                             }
                         });
                 } else {
@@ -162,9 +164,12 @@ export default function MainPage({
                 }
             })
             .then((userSelection) => {
-                // console.log("User selection:", userSelection);
+                //console.log("User selection:", userSelection);
                 // Set user selection
                 setUserSelection(userSelection[0].id);
+                if (userSelection.length == 1) {
+                    handleUserSelection(userSelection[0].id);
+                }
             })
             .catch((error) => {
                 // Handle any errors
