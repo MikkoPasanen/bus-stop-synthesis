@@ -51,7 +51,7 @@ const fetchJourneys = {
     fetchLine: async (line) => {
         try {
             return await fetch(
-                `http://data.itsfactory.fi/journeys/api/1/lines?name=${line}`
+                `https://data.itsfactory.fi/journeys/api/1/lines?name=${line}`
             )
                 .then((res) => res.json())
                 .then((data) => {

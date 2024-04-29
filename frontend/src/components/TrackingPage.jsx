@@ -77,6 +77,11 @@ export default function TrackingPage({ tracking, setTracking, linenro }) {
                 });
         };
 
+        /**
+         * Fetches the stop name from the given stopId
+         *
+         * @param {*} stopId
+         */
         const fetchStopName = async (stopId) => {
             try {
                 const response = await axios.get(
