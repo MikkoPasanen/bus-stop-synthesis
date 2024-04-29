@@ -16,7 +16,8 @@ function App() {
     // Bus line number
     const [id, setId] = useState("");
 
-    const [open, setOpen] = useState(false);
+    // Info screen
+    const [openInfoScreen, setOpenInfoScreen] = useState(false);
 
     // Bus tracking
     const [tracking, setTracking] = useState("not tracking");
@@ -35,7 +36,7 @@ function App() {
     return (
       <>
         <CssBaseline />
-        <TopAppBar setOpen={setOpen}/>
+        <TopAppBar setOpen={setOpenInfoScreen}/>
         {tracking === "not tracking" ? (
           <MainPage
             linenro={id}
@@ -56,7 +57,7 @@ function App() {
           />
         )
         }
-        <InfoScreen open={open} setOpen={setOpen} />
+        <InfoScreen open={openInfoScreen} setOpen={setOpenInfoScreen} />
       </>
     )
 }

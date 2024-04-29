@@ -20,7 +20,7 @@ export default function InfoScreen({ open, setOpen }) {
                         Syötä sen Nyssen bussin linjanumero tekstikenttään, jonka kyydissä olet ja paina "Seuraa linjaa" -nappia.
                         <br />
                         <br />
-                        Näytämme ja kuulumme sinulle, kun bussi on saapumassa seuraavalle pysäkille.
+                        Näytämme ja kuulutamme sinulle, kun bussi on saapumassa seuraavalle pysäkille.
                         <br />
                         <br />
                         Voit lopettaa seurannan painamalla "Lopeta seuranta" -nappia.

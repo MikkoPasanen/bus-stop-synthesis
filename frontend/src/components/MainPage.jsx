@@ -6,6 +6,7 @@ import validBusLines from "../util/validBusLines.js";
 import fetchJourneys from "../util/fetchJourneys.js";
 import reverseWordOrder from "../util/reverseWordOrder.js";
 import getUserPosition from "../util/getPosition.js";
+import ChooseBusScreen from "./ChooseBusScreen.jsx";
 import busIcon from "../assets/bus-icon.png";
 
 // Material UI
@@ -35,6 +36,9 @@ export default function MainPage({
 
     // Loading state
     const [loading, setLoading] = useState(false);
+
+    // Select bus screen
+    const [openChooseBusScreen, setOpenChooseBusScreen] = useState(true);
 
     /**
      * Checks if the bus line number is valid by
@@ -239,6 +243,8 @@ export default function MainPage({
                     Linjan numero ei ole kelvollinen
                 </Alert>
             </Snackbar>
+
+            <ChooseBusScreen open={openChooseBusScreen} setOpen={setOpenChooseBusScreen}/>
         </Box>
     );
 }
