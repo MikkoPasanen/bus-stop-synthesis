@@ -38,7 +38,17 @@ export default function MainPage({
     const [loading, setLoading] = useState(false);
 
     // Select bus screen
-    const [openChooseBusScreen, setOpenChooseBusScreen] = useState(true);
+    const [openChooseBusScreen, setOpenChooseBusScreen] = useState(false);
+
+    // To wait for user input
+    const [userSelection, setUserSelection] = useState(null);
+
+    // Line description holders
+    const [firstBus, setFirstBus] = useState(null);
+    const [secondBus, setSecondBus] = useState(null);
+
+    // Store nearest bus data
+    const [busData, setBusData] = useState(null);
 
     /**
      * Checks if the bus line number is valid by
@@ -66,6 +76,12 @@ export default function MainPage({
         setLinenroError(false);
     };
 
+    // Set the tracking ID with the selected ID
+    const handleUserSelection = (selectedId) => {
+        console.log(`handleUserSelection selectedId: ${selectedId}`);
+        setTracking(selectedId);
+    };
+
     /**
      * When called, change the tracking state to the given bus line number
      * and start tracking the bus stops (TrackingPage.jsx)
@@ -83,48 +99,79 @@ export default function MainPage({
         getUserPosition(setLatitude, setLongitude, setError)
             .then(() => {
                 if (tracking === "not tracking") {
-                    fetchJourneys
+                    return fetchJourneys
                         .fetchBus(linenro, latitude, longitude)
                         .then((data) => {
+                            setBusData(data);
                             if (data.length > 1) {
-                                fetchJourneys
-                                    .fetchLine(linenro)
-                                    .then((lineDesc) => {
-                                        console.log(lineDesc);
-                                        if (lineDesc != null) {
-                                            // null if error, in which case it defaults to the first on the list
-                                            let reversed =
-                                                reverseWordOrder(lineDesc);
-                                            // TODO: Use multipleChoice for making the user choose the bus they're on.
-                                            // Set the id of it in the bus that's being tracked.
+                                return new Promise((resolve, reject) => {
+                                    fetchJourneys
+                                        .fetchLine(linenro)
+                                        .then((lineDesc) => {
+                                            if (lineDesc != null) {
+                                                let reversed =
+                                                    reverseWordOrder(lineDesc);
 
-                                            let multipleChoice = []; // Contains all bus ids and the line descriptions in range
-                                            data.forEach((e) => {
-                                                if (e.direction == 1) {
-                                                    multipleChoice.push({
-                                                        id: e.id,
-                                                        description: lineDesc,
-                                                    });
-                                                } else {
-                                                    multipleChoice.push({
-                                                        id: e.id,
-                                                        description: reversed,
-                                                    });
-                                                }
-                                            });
-                                            console.log(multipleChoice);
-                                        }
-                                    });
+                                                const firstBus = {
+                                                    id: data[0].id,
+                                                    description: lineDesc,
+                                                };
+
+                                                const secondBus = {
+                                                    id: data[1].id,
+                                                    description: reversed,
+                                                };
+                                                setFirstBus(firstBus);
+                                                setSecondBus(secondBus);
+                                                setOpenChooseBusScreen(true);
+
+                                                let multipleChoice = [];
+                                                data.forEach((e) => {
+                                                    if (e.direction === 1) {
+                                                        multipleChoice.push({
+                                                            id: e.id,
+                                                            description:
+                                                                lineDesc,
+                                                        });
+                                                    } else {
+                                                        multipleChoice.push({
+                                                            id: e.id,
+                                                            description:
+                                                                reversed,
+                                                        });
+                                                    }
+                                                });
+                                                console.log(multipleChoice);
+
+                                                // Resolve the promise with the user's selection
+                                                resolve(multipleChoice);
+                                            } else {
+                                                reject(
+                                                    "Error fetching line description"
+                                                );
+                                            }
+                                        });
+                                });
+                            } else {
+                                return [data[0].id]; // Return a single tracking ID
                             }
-                            setTracking(data[0].id);
                         });
                 } else {
                     setTracking("not tracking");
+                    return Promise.resolve(); // Return a resolved promise
                 }
             })
+            .then((userSelection) => {
+                // console.log("User selection:", userSelection);
+                // Set user selection
+                setUserSelection(userSelection[0].id);
+            })
             .catch((error) => {
-                // Handle error if getUserPosition fails
-                console.error("Error getting user position:", error);
+                // Handle any errors
+                console.error("Error in trackStops:", error);
+            })
+            .finally(() => {
+                setLoading(false); // Set loading to false after everything is done
             });
     };
 
@@ -244,7 +291,13 @@ export default function MainPage({
                 </Alert>
             </Snackbar>
 
-            <ChooseBusScreen open={openChooseBusScreen} setOpen={setOpenChooseBusScreen}/>
+            <ChooseBusScreen
+                open={openChooseBusScreen}
+                setOpen={setOpenChooseBusScreen}
+                lineDesc={firstBus}
+                lineDescReversed={secondBus}
+                onSelect={handleUserSelection}
+            />
         </Box>
     );
 }
