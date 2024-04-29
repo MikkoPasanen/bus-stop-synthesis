@@ -8,10 +8,26 @@ import {
     DialogActions,
     Button,
     Divider,
-    Box
+    Box,
 } from "@mui/material";
 
-export default function ChooseBusScreen({ open, setOpen }) {
+export default function ChooseBusScreen({
+    open,
+    setOpen,
+    lineDesc,
+    lineDescReversed,
+    onSelect,
+}) {
+    const handleBusSelection = (busId) => {
+        setOpen(false); // Close the dialog
+        onSelect(busId); // Pass the selected bus ID to the parent component
+    };
+
+    var firstBusDescription = lineDesc ? lineDesc.description : "";
+    var secondBusDescription = lineDescReversed
+        ? lineDescReversed.description
+        : "";
+
     return (
         <>
             <Dialog open={open} onClose={() => setOpen(false)} maxWidth="lg">
@@ -36,22 +52,26 @@ export default function ChooseBusScreen({ open, setOpen }) {
                             alignItems: "center",
                         }}
                     >
-                        <Typography sx={{ textAlign: "center", mb: "0.5rem"}}>
-                            Bussi 1: Suunta-suunta-suunta-suunta
+                        <Typography sx={{ textAlign: "center", mb: "0.5rem" }}>
+                            Bussi 1: {firstBusDescription}
                         </Typography>
                         <Button
                             variant="contained"
                             sx={{ borderRadius: "20px", mb: "2rem" }}
+                            onClick={() => handleBusSelection(lineDesc.id)}
                         >
                             Valitse
                         </Button>
 
-                        <Typography sx={{ textAlign: "center", mb: "0.5rem"}}>
-                            Bussi 2: Suunta-suunta-suunta-suunta
+                        <Typography sx={{ textAlign: "center", mb: "0.5rem" }}>
+                            Bussi 2: {secondBusDescription}
                         </Typography>
                         <Button
                             variant="contained"
                             sx={{ borderRadius: "20px" }}
+                            onClick={() =>
+                                handleBusSelection(lineDescReversed.id)
+                            }
                         >
                             Valitse
                         </Button>
