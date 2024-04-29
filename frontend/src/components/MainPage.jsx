@@ -4,23 +4,37 @@ import { useState } from "react";
 // Util
 import validBusLines from "../util/validBusLines.js";
 import fetchJourneys from "../util/fetchJourneys.js";
+import reverseWordOrder from "../util/reverseWordOrder.js";
 import getUserPosition from "../util/getPosition.js";
 import busIcon from "../assets/bus-icon.png";
 
 // Material UI
-import { Box, TextField, Typography, Button, Snackbar, Alert, CircularProgress } from "@mui/material";
+import {
+    Box,
+    TextField,
+    Typography,
+    Button,
+    Snackbar,
+    Alert,
+    CircularProgress,
+} from "@mui/material";
 
 export default function MainPage({
-    linenro, setLinenro, setTracking, latitude, longitude,
-    setLatitude, setLongitude, setError, tracking
+    linenro,
+    setLinenro,
+    setTracking,
+    latitude,
+    longitude,
+    setLatitude,
+    setLongitude,
+    setError,
+    tracking,
 }) {
-
     // Errors
     const [linenroError, setLinenroError] = useState(false);
 
     // Loading state
     const [loading, setLoading] = useState(false);
-
 
     /**
      * Checks if the bus line number is valid by
@@ -66,22 +80,47 @@ export default function MainPage({
             .then(() => {
                 if (tracking === "not tracking") {
                     fetchJourneys
-                        .fetchBus(
-                            linenro,
-                            latitude,
-                            longitude
-                        )
-                        .then((data) => setTracking(data));
+                        .fetchBus(linenro, latitude, longitude)
+                        .then((data) => {
+                            if (data.length > 1) {
+                                fetchJourneys
+                                    .fetchLine(linenro)
+                                    .then((lineDesc) => {
+                                        console.log(lineDesc);
+                                        if (lineDesc != null) {
+                                            // null if error, in which case it defaults to the first on the list
+                                            let reversed =
+                                                reverseWordOrder(lineDesc);
+                                            // TODO: Use multipleChoice for making the user choose the bus they're on.
+                                            // Set the id of it in the bus that's being tracked.
+
+                                            let multipleChoice = []; // Contains all bus ids and the line descriptions in range
+                                            data.forEach((e) => {
+                                                if (e.direction == 1) {
+                                                    multipleChoice.push({
+                                                        id: e.id,
+                                                        description: lineDesc,
+                                                    });
+                                                } else {
+                                                    multipleChoice.push({
+                                                        id: e.id,
+                                                        description: reversed,
+                                                    });
+                                                }
+                                            });
+                                            console.log(multipleChoice);
+                                        }
+                                    });
+                            }
+                            setTracking(data[0].id);
+                        });
                 } else {
                     setTracking("not tracking");
                 }
             })
             .catch((error) => {
                 // Handle error if getUserPosition fails
-                console.error(
-                    "Error getting user position:",
-                    error
-                );
+                console.error("Error getting user position:", error);
             });
     };
 
