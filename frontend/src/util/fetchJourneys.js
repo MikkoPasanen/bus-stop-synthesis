@@ -18,7 +18,11 @@ const fetchJourneys = {
             )
                 .then((res) => res.json())
                 .then((data) => {
-                    data.body.forEach((e) => {
+                    // Temp arr to test calling of ChooseBusScreen
+                    let firstTwoItems = data.body.slice(0, 2);
+
+                    // Change firstTwoItems back to data.body once done testing
+                    firstTwoItems.forEach((e) => {
                         //Latitude = e.monitoredVehicleJourney.vehicleLocation.latitude
                         //Longitude = e.monitoredVehicleJourney.vehicleLocation.longitude
 
@@ -28,6 +32,15 @@ const fetchJourneys = {
                             direction: e.monitoredVehicleJourney.directionRef,
                         });
                     });
+
+                    /*
+                    console.log(
+                        `trackingBusList length: ${trackingBusList.length}`
+                    );
+                    */
+
+                    console.log(`trackingBusList: ${trackingBusList}`);
+
                     return trackingBusList;
                 });
         } catch (err) {
