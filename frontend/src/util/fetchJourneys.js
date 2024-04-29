@@ -8,36 +8,45 @@ const fetchJourneys = {
      * @param {*} line
      * @param {*} latitude
      * @param {*} longitude
-     * @returns The closest's bus's vehicleRef in the Journeys API
+     * @returns A list of the buses on that line
      */
     fetchBus: async (line, latitude, longitude) => {
         try {
-            let trackingBus;
-            let shortestDistance = 1500; // Will be overridden with any actual distance on Earth
+            let trackingBusList = [];
             return await fetch(
                 `https://data.itsfactory.fi/journeys/api/1/vehicle-activity?lineRef=${line}`
             )
                 .then((res) => res.json())
                 .then((data) => {
                     data.body.forEach((e) => {
-                        const busLocation =
-                            e.monitoredVehicleJourney.vehicleLocation;
-                        const distanceTo = Math.abs(
-                            parseFloat(busLocation.latitude) -
-                                latitude +
-                                parseFloat(busLocation.longitude) -
-                                longitude
-                        );
-                        if (distanceTo < shortestDistance) {
-                            shortestDistance = distanceTo;
-                            trackingBus = e.monitoredVehicleJourney.vehicleRef;
-                        }
+                        //Latitude = e.monitoredVehicleJourney.vehicleLocation.latitude
+                        //Longitude = e.monitoredVehicleJourney.vehicleLocation.longitude
+
+                        // TODO: Only call this if the bus is a certain distance from the user.
+                        trackingBusList.push({
+                            id: e.monitoredVehicleJourney.vehicleRef,
+                            direction: e.monitoredVehicleJourney.directionRef,
+                        });
                     });
-                    return trackingBus;
+                    return trackingBusList;
                 });
         } catch (err) {
             console.log(err);
             return "could not be found";
+        }
+    },
+    fetchLine: async (line) => {
+        try {
+            return await fetch(
+                `http://data.itsfactory.fi/journeys/api/1/lines?name=${line}`
+            )
+                .then((res) => res.json())
+                .then((data) => {
+                    return data.body[0].description;
+                });
+        } catch (err) {
+            console.log(err);
+            return null;
         }
     },
 };
