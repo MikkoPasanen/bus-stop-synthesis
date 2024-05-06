@@ -1,13 +1,15 @@
 // Here's the URL for tracking the fetchBus's returned busId
 // http://data.itsfactory.fi/journeys/api/1/vehicle-activity?vehicleRef=${vehicleId}
 
+import haversine from "haversine-distance";
+
 const fetchJourneys = {
     /**
      * Fetch a bus from the Journeys API based on the line number and the given
      * coordinates
      * @param {*} line
-     * @param {*} latitude
-     * @param {*} longitude
+     * @param {*} latitude Latitude of user
+     * @param {*} longitude Longitude of user
      * @returns A list of the buses on that line
      */
     fetchBus: async (line, latitude, longitude) => {
@@ -18,19 +20,49 @@ const fetchJourneys = {
             )
                 .then((res) => res.json())
                 .then((data) => {
-                    // Temp arr to test calling of ChooseBusScreen
-                    let firstTwoItems = data.body.slice(0, 2);
+                    data.body.forEach((e) => {
+                        const vehicleLatitude =
+                            e.monitoredVehicleJourney.vehicleLocation.latitude;
+                        const vehicleLongitude =
+                            e.monitoredVehicleJourney.vehicleLocation.longitude;
 
-                    // Change firstTwoItems back to data.body once done testing
-                    firstTwoItems.forEach((e) => {
-                        //Latitude = e.monitoredVehicleJourney.vehicleLocation.latitude
-                        //Longitude = e.monitoredVehicleJourney.vehicleLocation.longitude
+                        const distance = haversine(
+                            { latitude: latitude, longitude: longitude },
+                            {
+                                latitude: vehicleLatitude,
+                                longitude: vehicleLongitude,
+                            }
+                        ).toFixed(0);
 
-                        // TODO: Only call this if the bus is a certain distance from the user.
                         trackingBusList.push({
                             id: e.monitoredVehicleJourney.vehicleRef,
                             direction: e.monitoredVehicleJourney.directionRef,
+                            distance: distance,
                         });
+                    });
+
+                    // Sort by distance in ascending order and remove all but
+                    // first 2 elements
+                    let filteredBusList = trackingBusList
+                        .sort((a, b) => a.distance - b.distance)
+                        .slice(0, 2);
+
+                    // Check if 2nd nearest bus is within 20m of the nearest one
+                    // if not, only return first bus
+                    if (
+                        !(
+                            filteredBusList[1].distance -
+                                filteredBusList[0].distance <
+                            21
+                        )
+                    ) {
+                        filteredBusList = filteredBusList.slice(0, 1);
+                    }
+                    /*
+                    filteredBusList.forEach((e) => {
+                        console.log(
+                            `id: ${e.id}, direction: ${e.direction}, distance: ${e.distance}`
+                        );
                     });
 
                     /*
@@ -38,10 +70,9 @@ const fetchJourneys = {
                         `trackingBusList length: ${trackingBusList.length}`
                     );
                     */
+                    //return trackingBusList;
 
-                    console.log(`trackingBusList: ${trackingBusList}`);
-
-                    return trackingBusList;
+                    return filteredBusList;
                 });
         } catch (err) {
             console.log(err);
