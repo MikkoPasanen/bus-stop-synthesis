@@ -197,12 +197,17 @@ export default function MainPage({
                     position: "absolute",
                     width: "96vw",
                     maxWidth: 450,
-                    height: "98vw",
+                    height: "96vw",
                     maxHeight: 400,
                     borderRadius: "50%",
                     bgcolor: "#1d77e6",
                     zIndex: -1,
                     top: "10%",
+                    "@media (max-height: 820px)": {
+                        position: "fixed",
+                        top: "auto",
+                        marginTop: "20px",
+                    },
                 }}
             >
                 <Box
@@ -285,6 +290,9 @@ export default function MainPage({
                             marginTop: "auto",
                             flexDirection: "column",
                             marginTop: "20vh",
+                            "@media (max-height: 800px)": {
+                                marginTop: "160px",
+                            },
                         }}
                     >
                         <img
