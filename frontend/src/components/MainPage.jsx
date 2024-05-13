@@ -187,13 +187,18 @@ export default function MainPage({
                 display: "flex",
                 alignItems: "center",
                 flexDirection: "column",
+                maxWidth: "90vw",
+                marginLeft: "auto",
+                marginRight: "auto",
             }}
         >
             <Box
                 sx={{
                     position: "absolute",
-                    width: 450,
-                    height: 400,
+                    width: "96vw",
+                    maxWidth: 450,
+                    height: "98vw",
+                    maxHeight: 400,
                     borderRadius: "50%",
                     bgcolor: "#1d77e6",
                     zIndex: -1,
@@ -238,6 +243,9 @@ export default function MainPage({
                         variant="contained"
                         sx={{
                             mt: "3rem",
+                            "@media (max-width: 450px)": {
+                                mt: "2rem",
+                            },
                             borderRadius: "40px",
                             fontSize: "1.2rem",
                             bgcolor: "white",
