@@ -8,10 +8,9 @@ import fetchAndPlayMP3 from "../util/fetchAndPlayMP3.js";
 import axios from "axios";
 
 // Material UI
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography, Button } from "@mui/material";
 
 export default function TrackingPage({ tracking, setTracking, linenro }) {
-
     const [stopLocationName, setStopLocationName] = useState("");
 
     // Everytime the tracking state changes, fetch the bus info
@@ -117,6 +116,9 @@ export default function TrackingPage({ tracking, setTracking, linenro }) {
                 alignItems: "center",
                 justifyContent: "center",
                 flexDirection: "column",
+                maxWidth: "90vw",
+                marginLeft: "auto",
+                marginRight: "auto",
             }}
         >
             <Typography
@@ -142,53 +144,76 @@ export default function TrackingPage({ tracking, setTracking, linenro }) {
 
             <Box
                 sx={{
-                    position: "absolute",
-                    width: 450,
-                    height: 400,
+                    position: "relative",
+                    width: "96vw",
+                    maxWidth: 450,
+                    height: "96vw",
+                    maxHeight: 400,
                     borderRadius: "50%",
                     bgcolor: "#1d77e6",
                     zIndex: -1,
-                    top: "22%",
-                }}
-            />
-
-            <Typography
-                sx={{
-                    mt: "4.5rem",
-                    fontSize: "1.5rem",
-                    color: "white",
-                    fontWeight: "bold",
+                    top: "10%",
                 }}
             >
-                Seuraava pysäkki:
-            </Typography>
+                <Typography
+                    sx={{
+                        mt: "4.5rem",
+                        fontSize: "1.5rem",
+                        color: "white",
+                        fontWeight: "bold",
+                        textAlign: "center",
+                    }}
+                >
+                    Seuraava pysäkki:
+                </Typography>
 
-            <Typography
-                sx={{
-                    mt: "5rem",
-                    fontSize: "2.5rem",
-                    color: "white",
-                    fontWeight: "bold",
-                }}
-            >
-                {stopLocationName}
-            </Typography>
-
-            <Button
-                variant="contained"
-                sx={{
-                    mt: "2rem",
-                    borderRadius: "40px",
-                    fontSize: "1.5rem",
-                    fontWeight: "bold",
-                    position: "absolute",
-                    bottom: "15%",
-                    padding: "1.5rem",
-                }}
-                onClick={() => stopTracking()}
-            >
-                Lopeta seuranta
-            </Button>
+                <Typography
+                    sx={{
+                        mt: "5rem",
+                        fontSize: "2.5rem",
+                        color: "white",
+                        fontWeight: "bold",
+                        textAlign: "center",
+                    }}
+                >
+                    {stopLocationName}
+                </Typography>
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        marginTop: "20vh",
+                        maxWidth: "74%",
+                        alignItems: "center",
+                        marginLeft: "auto",
+                        marginRight: "auto",
+                        "@media (max-height: 990px)": {
+                            marginTop: "240px",
+                            marginBottom: "20px",
+                        },
+                        "@media (max-height: 770px)": {
+                            marginTop: "180px",
+                            marginBottom: "20px",
+                        },
+                        "@media (max-width: 400px)": {
+                            maxWidth: "90%",
+                        },
+                    }}
+                >
+                    <Button
+                        variant="contained"
+                        sx={{
+                            borderRadius: "40px",
+                            fontSize: "1.5rem",
+                            fontWeight: "bold",
+                            padding: "1.5rem",
+                        }}
+                        onClick={() => stopTracking()}
+                    >
+                        Lopeta seuranta
+                    </Button>
+                </Box>
+            </Box>
         </Box>
     );
 }
