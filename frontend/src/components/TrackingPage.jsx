@@ -72,7 +72,7 @@ export default function TrackingPage({ tracking, setTracking, linenro }) {
                     fetchStopName(parsedStopId);
                     // Check if the stop name should be called
                     if (callNextStop(parsedStopId, timeDifferenceInMinutes)) {
-                        fetchAndPlayMP3(parseInt(parsedStopId));
+                        fetchAndPlayMP3(stopLocationName);
                     }
                 });
         };
@@ -104,7 +104,7 @@ export default function TrackingPage({ tracking, setTracking, linenro }) {
             }
             callNextStop(undefined);
         };
-    }, [tracking]);
+    }, [tracking, stopLocationName]);
 
     const stopTracking = () => {
         setTracking("not tracking");

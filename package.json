@@ -6,7 +6,7 @@
     "scripts": {
         "install-all": "npm install",
         "start-front": "npm run dev --workspace=frontend",
-        "start-back": "npm run start-dev --workspace=backend",
+        "start-back": "python3 server.py",
         "start": "concurrently \"npm run start-front\" \"npm run start-back\"",
         "docs": "jsdoc -c jsdoc.json"
     },
