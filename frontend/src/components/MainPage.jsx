@@ -19,6 +19,7 @@ import {
     Alert,
     CircularProgress,
 } from "@mui/material";
+import zIndex from "@mui/material/styles/zIndex.js";
 
 export default function MainPage({
     linenro,
@@ -184,101 +185,125 @@ export default function MainPage({
         <Box
             sx={{
                 display: "flex",
-                justifyContent: "center",
                 alignItems: "center",
                 flexDirection: "column",
+                maxWidth: "90vw",
+                marginLeft: "auto",
+                marginRight: "auto",
             }}
         >
             <Box
                 sx={{
                     position: "absolute",
-                    width: 450,
-                    height: 400,
+                    width: "96vw",
+                    maxWidth: 450,
+                    height: "96vw",
+                    maxHeight: 400,
                     borderRadius: "50%",
                     bgcolor: "#1d77e6",
                     zIndex: -1,
                     top: "10%",
-                }}
-            />
-
-            <Box
-                sx={{
-                    position: "relative",
-                    zIndex: 1,
-                    flex: 1,
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
+                    "@media (max-height: 820px)": {
+                        position: "fixed",
+                        top: "auto",
+                        marginTop: "20px",
+                    },
                 }}
             >
-                <Typography
+                <Box
                     sx={{
-                        pt: "5rem",
-                        pb: "1rem",
-                        fontSize: "1.5rem",
-                        textAlign: "center",
-                        color: "white",
-                        fontWeight: "bold",
+                        position: "relative",
+                        zIndex: 1,
+                        flex: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
                     }}
                 >
-                    Syötä haluamasi Nyssen <br /> linjan numero
-                </Typography>
-                <TextField
-                    required
-                    label="Linjan numero"
-                    value={linenro}
-                    onChange={(e) => setLinenro(e.target.value)}
-                    error={linenroError}
-                    sx={{
-                        bgcolor: "white",
-                        borderRadius: "10px",
-                        border: "1px solid black",
-                    }}
-                />
-                <Button
-                    variant="contained"
-                    sx={{
-                        mt: "3rem",
-                        borderRadius: "40px",
-                        fontSize: "1.2rem",
-                        bgcolor: "white",
-                        border: "1px solid black",
-                        padding: "1.5rem",
-                        "&:active": {
-                            backgroundColor: "white",
-                        },
-                    }}
-                    value={linenro}
-                    onClick={() => trackStops(linenro)}
-                >
-                    {loading ? (
-                        <>
+                    <Typography
+                        sx={{
+                            pt: "5rem",
+                            pb: "1rem",
+                            fontSize: "1.5rem",
+                            textAlign: "center",
+                            color: "white",
+                            fontWeight: "bold",
+                        }}
+                    >
+                        Syötä haluamasi Nyssen <br /> linjan numero
+                    </Typography>
+                    <TextField
+                        required
+                        label="Linjan numero"
+                        value={linenro}
+                        onChange={(e) => setLinenro(e.target.value)}
+                        error={linenroError}
+                        sx={{
+                            bgcolor: "white",
+                            borderRadius: "10px",
+                            border: "1px solid black",
+                        }}
+                    />
+                    <Button
+                        variant="contained"
+                        sx={{
+                            mt: "3rem",
+                            "@media (max-width: 450px)": {
+                                mt: "2rem",
+                            },
+                            borderRadius: "40px",
+                            fontSize: "1.2rem",
+                            bgcolor: "white",
+                            border: "1px solid black",
+                            padding: "1.5rem",
+                            "&:active": {
+                                backgroundColor: "white",
+                            },
+                        }}
+                        value={linenro}
+                        onClick={() => trackStops(linenro)}
+                    >
+                        {loading ? (
+                            <>
+                                <Typography
+                                    sx={{ color: "black", fontWeight: "bold" }}
+                                >
+                                    Haetaan linjoja...
+                                </Typography>
+                                <CircularProgress
+                                    size={20}
+                                    sx={{ ml: 2 }}
+                                    color="secondary"
+                                />
+                            </>
+                        ) : (
                             <Typography
                                 sx={{ color: "black", fontWeight: "bold" }}
                             >
-                                Haetaan linjoja...
+                                Seuraa linjaa
                             </Typography>
-                            <CircularProgress
-                                size={20}
-                                sx={{ ml: 2 }}
-                                color="secondary"
-                            />
-                        </>
-                    ) : (
-                        <Typography sx={{ color: "black", fontWeight: "bold" }}>
-                            Seuraa linjaa
-                        </Typography>
-                    )}
-                </Button>
+                        )}
+                    </Button>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            marginTop: "auto",
+                            flexDirection: "column",
+                            marginTop: "20vh",
+                            "@media (max-height: 800px)": {
+                                marginTop: "160px",
+                            },
+                        }}
+                    >
+                        <img
+                            src={busIcon}
+                            alt="Bus icon"
+                            width="300"
+                            height="300"
+                        />
+                    </Box>
+                </Box>
             </Box>
-
-            <img
-                src={busIcon}
-                alt="Bus icon"
-                width="300"
-                height="300"
-                style={{ position: "absolute", bottom: 0 }}
-            />
 
             <Snackbar
                 open={linenroError}
